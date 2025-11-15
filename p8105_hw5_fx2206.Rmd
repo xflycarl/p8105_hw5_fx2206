@@ -16,6 +16,7 @@ set.seed(8105)
 theme_set(theme_bw(base_size = 12))
 ```
 
+**Problem 1**
 ```{r}
 has_dup_bday <- function(n, days_in_year = 365) {
 bdays <- sample.int(days_in_year, size = n, replace = TRUE)
@@ -90,11 +91,12 @@ ggplot(p2_power, aes(x = mu_true, y = power)) +
   labs(
     x = "True mean (μ)",
     y = "Power (Pr(reject H₀))",
-    title = "Power vs. true mean (using broom::tidy)"
+    title = "Power vs. true mean"
   )
 ```
 Power increases monotonically with the effect size (the farther μ is from 0, the more likely we reject the false null).
 
+average simulate value
 ```{r}
 p2_means_overall <-
   p2_res %>%
@@ -130,7 +132,9 @@ homs_raw <- read_csv("homicide-data.csv", show_col_types = FALSE)
 glimpse(homs_raw)
 ```
 The Washington Post homicide dataset contains records of individual homicide cases from 50 large U.S. cities, including information such as victim demographics, location, and case disposition (e.g., “Closed by arrest,” “Closed without arrest,” “Open/No arrest”).
-(1)
+
+
+(1)Describe and create city_state, then summarize totals, unsolved
 ```{r}
 homs <-
   homs_raw |>
@@ -154,7 +158,7 @@ city_summ |> slice_head(n = 10)
 ```
 
 
-(2)
+(2)Baltimore, MD – prop.test and tidy extraction
 ```{r}
 balt <- city_summ |> filter(city_state == "Baltimore, MD")
 balt_pt <- prop.test(x = balt$unsolved, n = balt$total)
@@ -171,7 +175,7 @@ balt_tidy
 
 ```
 
-(3)
+(3)Run prop.test for every city and extract estimates
 ```{r}
 city_props <-
   city_summ |>
@@ -190,7 +194,7 @@ city_props <-
 city_props |> arrange(desc(prop_unsolved)) |> slice_head(n = 5)
 ```
 
-(4)
+(4)Plot estimates + CIs per city (ordered by estimate)
 ```{r}
 city_props_plot <-
   city_props |>
